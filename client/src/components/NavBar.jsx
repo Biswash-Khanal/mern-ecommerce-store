@@ -13,7 +13,7 @@ const NavBar = () => {
 	};
 
 	return (
-		<nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+		<nav className="sticky top-0 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white transition-all z-100">
 			<NavLink onClick={()=>setOpen(false)}  to="/">
 				<img
 					className="h-9"
@@ -74,7 +74,7 @@ const NavBar = () => {
 			<button
 				onClick={() => (open ? setOpen(false) : setOpen(true))}
 				aria-label="Menu"
-				className="sm:hidden"
+				className="sm:hidden cursor-pointer"
 			>
 				{/* Menu Icon SVG */}
 				<img
@@ -88,7 +88,7 @@ const NavBar = () => {
 				<div
 					className={`${
 						open ? "flex" : "hidden"
-					} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}
+					} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden z-10`}
 				>
 					<NavLink
 						to="/"
