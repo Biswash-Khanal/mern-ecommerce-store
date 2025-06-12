@@ -5,22 +5,33 @@ import { useAppContext } from "../context/AppContext";
 
 const NavBar = () => {
 	const [open, setOpen] = React.useState(false);
-	const { user, setUser, setShowUserLogin, navigate, setSearchQuery, searchQuery } = useAppContext();
+	const {
+		user,
+		setUser,
+		setShowUserLogin,
+		navigate,
+		setSearchQuery,
+		searchQuery,
+		getCartCount,
+	} = useAppContext();
 
 	const logout = async () => {
 		setUser(null);
 		navigate("/");
 	};
 
-	useEffect(()=>{
-		if(searchQuery.length>0){
-			navigate("/products")
+	useEffect(() => {
+		if (searchQuery.length > 0) {
+			navigate("/products");
 		}
-	}, [searchQuery])
+	}, [searchQuery]);
 
 	return (
 		<nav className="sticky top-0 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white transition-all z-100">
-			<NavLink onClick={()=>setOpen(false)}  to="/">
+			<NavLink
+				onClick={() => setOpen(false)}
+				to="/"
+			>
 				<img
 					className="h-9"
 					src={assets.logo}
@@ -39,7 +50,7 @@ const NavBar = () => {
 						className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
 						type="text"
 						placeholder="Search products"
-						onChange={(e)=>setSearchQuery(e.target.value)}
+						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 					<img
 						src={assets.search_icon}
@@ -48,48 +59,83 @@ const NavBar = () => {
 					/>
 				</div>
 
-				<div onClick={()=>navigate("/cart")} className="relative cursor-pointer">
+				<div
+					onClick={() => navigate("/cart")}
+					className="relative cursor-pointer"
+				>
 					<img
 						src={assets.nav_cart_icon}
 						alt="cart"
 						className="w-6 opacity-80"
 					/>
 					<button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
-						3
+						{getCartCount()}
 					</button>
 				</div>
 
 				{!user ? (
-					<button onClick={() => {
-								setOpen(false);
-								setShowUserLogin(true);
-								setUser(true);
-							}} className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full">
+					<button
+						onClick={() => {
+							setOpen(false);
+							setShowUserLogin(true);
+							setUser(true);
+						}}
+						className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full"
+					>
 						Login
 					</button>
 				) : (
 					<div className="relative group">
-                        <img src={assets.profile_icon} className="w-10" alt="profile picture" />
-                        <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow border bordr-gray-200 py-2.5 w-30 rounded-md text-sm z-40">
-                            <li onClick={()=>navigate("my-orders")} className="p-1.5 pl-3 hover:bg-primary/10 cursor-pointer">My Orders</li>
-                            <li onClick={logout} className="p-1.5 pl-3 hover:bg-primary/10 cursor-pointer">Logout</li>
-                        </ul>
-                    </div>
+						<img
+							src={assets.profile_icon}
+							className="w-10"
+							alt="profile picture"
+						/>
+						<ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow border bordr-gray-200 py-2.5 w-30 rounded-md text-sm z-40">
+							<li
+								onClick={() => navigate("my-orders")}
+								className="p-1.5 pl-3 hover:bg-primary/10 cursor-pointer"
+							>
+								My Orders
+							</li>
+							<li
+								onClick={logout}
+								className="p-1.5 pl-3 hover:bg-primary/10 cursor-pointer"
+							>
+								Logout
+							</li>
+						</ul>
+					</div>
 				)}
 			</div>
 
-			<button
-				onClick={() => (open ? setOpen(false) : setOpen(true))}
-				aria-label="Menu"
-				className="sm:hidden cursor-pointer"
-			>
-				{/* Menu Icon SVG */}
-				<img
-					src={assets.menu_icon}
-					alt="menu"
-				/>
-			</button>
+			<div className="flex gap-6 sm:hidden">
+				<div
+					onClick={() => navigate("/cart")}
+					className="relative cursor-pointer"
+				>
+					<img
+						src={assets.nav_cart_icon}
+						alt="cart"
+						className="w-6 opacity-80"
+					/>
+					<button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">
+						{getCartCount()}
+					</button>
+				</div>
 
+				<button
+					onClick={() => (open ? setOpen(false) : setOpen(true))}
+					aria-label="Menu"
+					className="sm:hidden cursor-pointer"
+				>
+					{/* Menu Icon SVG */}
+					<img
+						src={assets.menu_icon}
+						alt="menu"
+					/>
+				</button>
+			</div>
 			{/* Mobile Menu */}
 			{open && (
 				<div

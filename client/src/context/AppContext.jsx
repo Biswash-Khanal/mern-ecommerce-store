@@ -14,6 +14,29 @@ export const AppContextProvider = ({ children }) => {
 	const [cartItems, setCartItems] = useState({});
 	const [searchQuery, setSearchQuery] = useState({});
 
+	//Function to count the number of items in cart and the sum of money
+
+	const getCartCount = ()=>{
+		let totalCount =0;
+		for(const item in cartItems){
+			totalCount += cartItems[item];
+		}
+
+		return totalCount;
+	}
+
+	const getCartAmount = ()=>{
+		let totalAmount =0;
+		for(const items in cartItems){
+			let itemInfo = products.find((product)=>product._id === items);
+			if(cartItems[items] > 0){
+				totalAmount += itemInfo.offerPrice * cartItems[items]
+			}
+		
+		}
+		return Math.ceil(totalAmount * 100)/100;
+	}
+
 	//Fetch all products function
 	const fetchProducts = async () => {
 		setProducts(dummyProducts);
@@ -73,7 +96,9 @@ export const AppContextProvider = ({ children }) => {
 		removeFromCart,
 		cartItems,
 		searchQuery,
-		setSearchQuery
+		setSearchQuery,
+		getCartCount,
+		getCartAmount
 	};
 
 	return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
