@@ -40,7 +40,7 @@ const NavBar = () => {
 			</NavLink>
 
 			{/* Desktop Menu */}
-			<div className="hidden sm:flex items-center gap-8">
+			<div className="hidden sm:flex items-center gap-8 sm:gap-5  lg:gap-8">
 				<NavLink to="/">Home</NavLink>
 				<NavLink to="/products">All Products</NavLink>
 				<NavLink to="/contact">Contact</NavLink>
