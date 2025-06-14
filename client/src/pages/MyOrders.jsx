@@ -31,7 +31,7 @@ const MyOrders = () => {
 							{order.amount}
 						</span>
 					</p>
-					{order.items.map((item, index) => {
+					{order.items.map((item, index) => (
 						<div key={index}>
 							<div className="flex items-center mb-4 md:mb-0">
 								<div className="bg-primary/10 p-4 rounded-lg">
@@ -57,8 +57,8 @@ const MyOrders = () => {
                             <p className="text-primary text-lg font-medium">
                                 Amount:{currency}{item.product.offerprice*item.quantity}
                             </p>
-						</div>;
-					 })}
+						</div>
+					 ))}
 				</div>
 			))}
 		</div>
