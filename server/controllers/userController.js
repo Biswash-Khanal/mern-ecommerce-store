@@ -22,14 +22,14 @@ export const register = async (req, res) => {
 		const user = await User.create({ name, email, password: hashedPassword });
 
 		const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-			expiresIn: "7d"
+			expiresIn: "7d",
 		});
 
 		res.cookie("token", token, {
 			httpOnly: true, //prevents js to access cookie
 			secure: process.env.NODE_ENV === "production", //use secure cookies in production
 			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-			maxAge: 7 * 24 * 60 * 1000,//cookie exp time (ms)
+			maxAge: 7 * 24 * 60 * 1000, //cookie exp time (ms)
 		});
 
 		return res.json({
@@ -63,28 +63,55 @@ export const login = async (req, res) => {
 
 		const isMatch = await bcrypt.compare(password, registeredUser.password);
 
-		if(!isMatch){
+		if (!isMatch) {
 			return res.json({ success: false, message: "invalid email or password" });
 		}
 
 		const token = jwt.sign({ id: registeredUser._id }, process.env.JWT_SECRET, {
-			expiresIn: "7d"
+			expiresIn: "7d",
 		});
 
 		res.cookie("token", token, {
 			httpOnly: true, //prevents js to access cookie
 			secure: process.env.NODE_ENV === "production", //use secure cookies in production
 			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-			maxAge: 7 * 24 * 60 * 1000,//cookie exp time (ms)
+			maxAge: 7 * 24 * 60 * 1000, //cookie exp time (ms)
 		});
 
 		return res.json({
 			success: true,
 			user: { email: registeredUser.email, name: registeredUser.name },
 		});
-
 	} catch (error) {
 		console.log(error.message);
 		res.json({ success: false, message: error.message });
+	}
+};
+
+//authorize user:/api/user/is-auth
+
+export const isAuth = async (req, res) => {
+	try {
+		const { userId } = req.body;
+		const user = await User.findById(userId).select("-password");
+		return res.json({ success: true, user });
+	} catch (e) {
+		console.log(e.message);
+		res.json({ success: false, message: error.message });
+	}
+};
+
+//logout user /api/user/logout
+
+export const logout = async (req, res) => {
+	try {
+		res.clearCookie("token", {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.json({success:false, message:error.message});
 	}
 };
