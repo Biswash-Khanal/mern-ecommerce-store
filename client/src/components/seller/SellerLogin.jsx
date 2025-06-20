@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const SellerLogin = () => {
-	const { isSeller, setIsSeller, navigate } = useAppContext();
+	const { isSeller, setIsSeller, navigate, axios } = useAppContext();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -14,11 +15,22 @@ const SellerLogin = () => {
 	}, [isSeller]);
 
 	const onSubmitHandler = async (event) => {
-		event.preventDefault();
-        setIsSeller(true);
-
+		try {
+			event.preventDefault();
+			const { data } = await axios.post("/api/seller/login", {
+				email,
+				password,
+			});
+			if(data.success){
+				setIsSeller(true);
+				navigate("/seller")
+			}else{
+				toast.error(data.message)
+			}
+		} catch (error) {
+			toast.error(error.message)
+		}
 	};
-
 
 	return (
 		!isSeller && (
@@ -32,17 +44,32 @@ const SellerLogin = () => {
 						<span className="text-primary">seller</span>Login
 					</p>
 
-                    <div className="w-full">
-                        <p>Email</p>
-                        <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="Enter your Email" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" required/>
-                    </div>
-                    <div className="w-full">
-                        <p>Password</p>
-                        <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="Enter your Password" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" required/>
-                    </div>
+					<div className="w-full">
+						<p>Email</p>
+						<input
+							onChange={(e) => setEmail(e.target.value)}
+							value={email}
+							type="email"
+							placeholder="Enter your Email"
+							className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
+							required
+						/>
+					</div>
+					<div className="w-full">
+						<p>Password</p>
+						<input
+							onChange={(e) => setPassword(e.target.value)}
+							value={password}
+							type="password"
+							placeholder="Enter your Password"
+							className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
+							required
+						/>
+					</div>
 
-                        <button className="bg-primary text-white hover:bg-primary-dull w-full py-2 rounded-md cursor-pointer active:bg-primary/50">Login</button>
-
+					<button className="bg-primary text-white hover:bg-primary-dull w-full py-2 rounded-md cursor-pointer active:bg-primary/50">
+						Login
+					</button>
 				</div>
 			</form>
 		)
