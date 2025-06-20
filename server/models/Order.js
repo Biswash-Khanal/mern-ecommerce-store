@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema(
 		amount: { type: Number, required: true },
 		address: { type: String, required: true, ref: "address" },
 		status: { type: String, default: "Order Placed" },
-		paymentType: { type: SVGFESpecularLightingElement, required: true },
+		paymentType: { type: String, required: true },
 		isPaid: { type: Boolean, default: false },
 	},
 	{ timestamps: true }
