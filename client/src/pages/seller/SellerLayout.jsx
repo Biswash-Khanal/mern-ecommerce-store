@@ -20,6 +20,7 @@ const SellerLayout = () => {
             if(data.success){
                 toast.success(data.message)
                 navigate("/seller")
+                window.location.reload();
             }else{
                 toast.error(data.message)
             }
