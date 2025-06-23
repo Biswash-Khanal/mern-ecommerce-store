@@ -8,13 +8,16 @@ export const register = async (req, res) => {
 		const { name, email, password } = req.body;
 
 		if (!name || !email || !password) {
-			return res.json({ success: false, message: "missing details" });
+			return res.json({
+				success: false,
+				message: "Missing Registration Details!",
+			});
 		}
 
 		const existingUser = await User.findOne({ email });
 
 		if (existingUser) {
-			return res.json({ success: false, message: "User already exists" });
+			return res.json({ success: false, message: "User Already Exists!" });
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,12 +41,11 @@ export const register = async (req, res) => {
 		});
 	} catch (error) {
 		res.json({ success: false, message: error.message });
-		console.log("ErrorMessage");
 		console.log(error.message);
 	}
 };
 
-//login user:/api/user/login
+//Login User: /api/user/login
 
 export const login = async (req, res) => {
 	try {
@@ -52,35 +54,43 @@ export const login = async (req, res) => {
 		if (!email || !password) {
 			return res.json({
 				success: false,
-				message: "Email and password are required",
+				message: "Both E-mail and Password are Required for Logging In!",
 			});
 		}
-		const registeredUser = await User.findOne({ email });
+		const user = await User.findOne({ email });
 
-		if (!registeredUser) {
-			return res.json({ success: false, message: "invalid email or password" });
+		if (!user) {
+			return res.json({
+				success: false,
+				message:
+					"Incorrect E-mail or Password! Please Enter the Correct Details!",
+			});
 		}
 
-		const isMatch = await bcrypt.compare(password, registeredUser.password);
+		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (!isMatch) {
-			return res.json({ success: false, message: "invalid email or password" });
+			return res.json({
+				success: false,
+				message:
+					"Incorrect E-mail or Password! Please Enter the Correct Details!",
+			});
 		}
 
-		const token = jwt.sign({ id: registeredUser._id }, process.env.JWT_SECRET, {
+		const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
 			expiresIn: "7d",
 		});
 
 		res.cookie("token", token, {
-			httpOnly: true, //prevents js to access cookie
-			secure: process.env.NODE_ENV === "production", //use secure cookies in production
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
 			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-			maxAge: 7 * 24 * 60 * 1000, //cookie exp time (ms)
+			maxAge: 7 * 24 * 60 * 1000,
 		});
 
 		return res.json({
 			success: true,
-			user: { email: registeredUser.email, name: registeredUser.name },
+			user: { email: user.email, name: user.name },
 		});
 	} catch (error) {
 		console.log(error.message);
@@ -88,20 +98,20 @@ export const login = async (req, res) => {
 	}
 };
 
-//authorize user:/api/user/is-auth
+//Check Authorization : /api/user/is-auth
 
 export const isAuth = async (req, res) => {
 	try {
-		
-		const user = await User.findById(req.userId).select("-password");
+		const { userId } = req.body;
+		const user = await User.findById(userId).select("-password");
 		return res.json({ success: true, user });
-	} catch (e) {
-		console.log(e.message);
-		res.json({ success: false, message: error.message });
+	} catch (error) {
+		console.log(error.message);
+		res.json({ success: false, message1: error.message, message2:"test" });
 	}
 };
 
-//logout user /api/user/logout
+//Logout User: /api/user/logout
 
 export const logout = async (req, res) => {
 	try {
@@ -110,9 +120,9 @@ export const logout = async (req, res) => {
 			secure: process.env.NODE_ENV === "production",
 			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
 		});
-		res.json({success:true, message:"Logged Out"})
+		res.json({ success: true, message: "Logged Out Successfully!" });
 	} catch (error) {
 		console.log(error.message);
-		res.json({success:false, message:error.message});
+		res.json({ success: false, message: error.message });
 	}
 };

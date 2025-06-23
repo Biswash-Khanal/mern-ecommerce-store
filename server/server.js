@@ -10,6 +10,7 @@ import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import { configDotenv } from "dotenv";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -24,6 +25,11 @@ const allowedOrigins = ["http://localhost:5173"];
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+app.get("/test", (req, res) => {
+  console.log("BODY:", req.body);
+  res.json({ body: req.body });
+});
 
 app.get("/", (req, res) => res.send("API is Working!"));
 app.use("/api/user", userRouter);
