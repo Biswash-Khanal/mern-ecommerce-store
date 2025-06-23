@@ -15,6 +15,7 @@ const Cart = () => {
 		getCartAmount,
 		axios,
 		user,
+		setCartItems,
 	} = useAppContext();
 	const [showAddress, setShowAddress] = useState(false);
 
@@ -50,9 +51,50 @@ const Cart = () => {
 		setCartArray(tempArray);
 	};
 
-	const placeOrder = async () => {};
+	const placeOrder = async () => {
+		try {
+			if (!selectedAddress) {
+				return toast.error("Please select an address!");
+			}
 
-	const proceedCheckout = async () => {};
+			if (paymentOption === "COD") {
+				const { data } = await axios.post("/api/order/cod", {
+					userId: user._id,
+					items: cartArray.map((item) => ({
+						product: item._id,
+						quantity: item.quantity,
+					})),
+					address: selectedAddress._id,
+				});
+				if (data.success) {
+					toast.success(data.message);
+					setCartItems({});
+					navigate("/my-orders");
+				} else {
+					toast.error(data.message);
+				}
+			} else {
+				//place order with stripe
+				const { data } = await axios.post("/api/order/stripe", {
+					userId: user._id,
+					items: cartArray.map((item) => ({
+						product: item._id,
+						quantity: item.quantity,
+					})),
+					address: selectedAddress._id,
+				});
+				if (data.success) {
+					window.location.replace(data.url);
+				} else {
+					toast.error(data.message);
+				}
+			}
+		} catch (error) {
+			toast.error(error.message);
+		}
+	};
+
+	const proceedCheckout = async () => {navigate("/payment-soon");};
 
 	useEffect(() => {
 		if (products.length > 0 && cartItems) {
@@ -66,9 +108,9 @@ const Cart = () => {
 		}
 	}, [user]);
 
-	useEffect(()=>{
-console.log("Selected Address: ", selectedAddress);
-	}, [selectedAddress])
+	useEffect(() => {
+		console.log("Selected Address: ", selectedAddress);
+	}, [selectedAddress]);
 	return products.length > 0 && cartItems ? (
 		<div className="flex flex-col md:flex-row mt-16">
 			<div className="flex-1 max-w-4xl">
@@ -272,4 +314,5 @@ console.log("Selected Address: ", selectedAddress);
 		</div>
 	) : null;
 };
+
 export default Cart;

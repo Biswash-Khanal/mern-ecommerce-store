@@ -4,15 +4,24 @@ import { dummyOrders } from "../assets/assets";
 
 const MyOrders = () => {
 	const [myOrders, setMyOrders] = useState([]);
-	const { currency } = useAppContext();
+	const { currency, axios, user } = useAppContext();
 
 	const fetchMyOrders = async () => {
-		setMyOrders(dummyOrders);
+		try {
+			const { data } = await axios.get("/api/order/user");
+			if (data.success) {
+				setMyOrders(data.orders);
+			}
+		} catch (error) {
+			console.log(error.message);
+		}
 	};
 
 	useEffect(() => {
-		fetchMyOrders();
-	}, []);
+		if (user) {
+			fetchMyOrders();
+		}
+	}, [user]);
 
 	return (
 		<div className="mt-16 pb-16">
@@ -22,7 +31,10 @@ const MyOrders = () => {
 			</div>
 
 			{myOrders.map((order, index) => (
-				<div key={index} className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl">
+				<div
+					key={index}
+					className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl"
+				>
 					<p className="flex justify-between md:items-center text-gray-400 md:font-medium max-md:flex-col">
 						<span>OrderID:{order._id}</span>
 						<span>Payment:{order.paymentType}</span>
@@ -32,7 +44,12 @@ const MyOrders = () => {
 						</span>
 					</p>
 					{order.items.map((item, index) => (
-						<div className={`relative bg-white text-gray-500/70 ${order.items.length!==1+index?"border-b":""} border-gray-300 flex flex-col md:flex-row md:items-center justify-between p-4 py-5 md:gap-16 w-full max-w-4xl` }key={index}>
+						<div
+							className={`relative bg-white text-gray-500/70 ${
+								order.items.length !== 1 + index ? "border-b" : ""
+							} border-gray-300 flex flex-col md:flex-row md:items-center justify-between p-4 py-5 md:gap-16 w-full max-w-4xl`}
+							key={index}
+						>
 							<div className="flex items-center mb-4 md:mb-0">
 								<div className="bg-primary/10 p-4 rounded-lg">
 									<img
@@ -54,12 +71,12 @@ const MyOrders = () => {
 								<p>Status: {order.status}</p>
 								<p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
 							</div>
-                            <p className="text-primary text-lg font-medium">
-                                Amount:{currency}{(item.product.offerPrice) * item.quantity}
-								
-                            </p>
+							<p className="text-primary text-lg font-medium">
+								Amount:{currency}
+								{item.product.offerPrice * item.quantity}
+							</p>
 						</div>
-					 ))} 
+					))}
 				</div>
 			))}
 		</div>
