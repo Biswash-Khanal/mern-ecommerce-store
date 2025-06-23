@@ -1,21 +1,23 @@
-//place order cod :/api/order/cod
-
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 
+//Place Order using Cash on Delivery :/api/order/cod
 export const placeOrderCOD = async (req, res) => {
 	try {
 		const { userId, items, address } = req.body;
 		if (!address || items.length === 0) {
-			return res.json({ success: false, message: "invalid data" });
+			return res.json({
+				success: false,
+				message: "Invalid Data!, Please Check and Retry!",
+			});
 		}
-		//calculate amount using items
+		//Calculate total amount using items
 		let amount = await items.reduce(async (acc, item) => {
 			const product = await Product.findById(item.product);
 			return (await acc) + product.offerPrice * item.quantity;
 		}, 0);
 
-		//add tax charge
+		//Add 2% charge(Tax)
 
 		amount += Math.floor(amount * 0.02);
 
@@ -26,13 +28,16 @@ export const placeOrderCOD = async (req, res) => {
 			address,
 			paymentType: "COD",
 		});
-		return res.json({ success: true, message: "Order Placed Successfully" });
+		return res.json({
+			success: true,
+			message: "Your Order has been Placed Successfully!",
+		});
 	} catch (error) {
 		return res.json({ success: false, message: error.message });
 	}
 };
 
-//get orders by userId: /api/order/user
+//Get Individual users orders using userId: /api/order/user
 
 export const getUserOrders = async (req, res) => {
 	try {
@@ -43,13 +48,14 @@ export const getUserOrders = async (req, res) => {
 		})
 			.populate("items.product address")
 			.sort({ createdAt: -1 });
+
 		res.json({ success: true, orders });
 	} catch (error) {
 		res.json({ success: false, message: error.message });
 	}
 };
 
-//get all orders for seller: /api/order/seller
+//Get All orders (for seller or admin): /api/order/seller
 export const getAllOrders = async (req, res) => {
 	try {
 		const orders = await Order.find({

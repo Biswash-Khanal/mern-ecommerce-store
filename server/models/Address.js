@@ -11,7 +11,7 @@ const addressSchema = new mongoose.Schema(
         state: { type: String, required: true },
         zipcode: { type: Number, required: true },
         country: { type: String, required: true },
-        phone: { type: Number, default: true },
+        phone: { type: String, default: true },
     }
     
 );

@@ -26,11 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-app.get("/test", (req, res) => {
-  console.log("BODY:", req.body);
-  res.json({ body: req.body });
-});
-
+//All the different Routes
 app.get("/", (req, res) => res.send("API is Working!"));
 app.use("/api/user", userRouter);
 app.use("/api/seller", sellerRouter);
