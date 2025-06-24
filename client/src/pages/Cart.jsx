@@ -72,8 +72,9 @@ const Cart = () => {
 					navigate("/my-orders");
 				} else {
 					toast.error(data.message);
+					
 				}
-			} else {
+			} else if (paymentOption === "Online") {
 				//place order with stripe
 				const { data } = await axios.post("/api/order/stripe", {
 					userId: user._id,
@@ -87,6 +88,8 @@ const Cart = () => {
 					window.location.replace(data.url);
 				} else {
 					toast.error(data.message);
+					//error is here
+					
 				}
 			}
 		} catch (error) {
@@ -304,7 +307,7 @@ const Cart = () => {
 					</button>
 				) : (
 					<button
-						onClick={proceedCheckout}
+						onClick={placeOrder}
 						className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition"
 					>
 						Proceed To Checkout

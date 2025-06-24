@@ -11,6 +11,7 @@ import cartRouter from "./routes/cartRoute.js";
 import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import { configDotenv } from "dotenv";
+import { stripeWebHooks } from "./controllers/orderController.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -20,6 +21,8 @@ await connectCloudinary();
 
 //Allow multiple urls to access the backend
 const allowedOrigins = ["http://localhost:5173"];
+
+app.post("/stripe", express.raw({type:"application/json"}), stripeWebHooks)
 
 //middleware configuration
 app.use(express.json());

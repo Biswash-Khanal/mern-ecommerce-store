@@ -18,6 +18,7 @@ import ProductList from './pages/seller/ProductList';
 import Orders from './pages/seller/Orders';
 import AddProduct from './pages/seller/AddProduct';
 import PaymentSoon from './pages/Payment-soon';
+import Loading from './components/Loading';
 const App = () => {
 
 const isSellerPath = useLocation().pathname.includes("seller");
@@ -40,6 +41,7 @@ const {showUserLogin, isSeller} = useAppContext();
           <Route path="/payment-soon" element={<PaymentSoon />} />
 
           <Route path='/my-orders' element={<MyOrders/>} />
+          <Route path='/loader' element={<Loading/>} />
           <Route path='/seller' element={isSeller?<SellerLayout/>:<SellerLogin/>} >
             <Route index element={isSeller? <AddProduct/> : null} />
             <Route path='product-list' element={<ProductList/>} /> 
