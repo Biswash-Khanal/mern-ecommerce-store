@@ -20,7 +20,7 @@ await connectDB();
 await connectCloudinary();
 
 //Allow multiple urls to access the backend
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173", "https://mern-ecommerce-store-plum.vercel.app"];
 
 app.post("/stripe", express.raw({type:"application/json"}), stripeWebHooks)
 
