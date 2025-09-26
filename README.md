@@ -40,7 +40,7 @@ A full-featured E-Commerce application built using the **MERN stack** (MongoDB, 
 - Browse products
 - Add to cart
 - Manage address
-- Place orders (Cash on Delivery / Stripe)
+- Place orders (Cash on Delivery, stripe<dummy>)
 - View order history
 
 ### 🛒 Seller/Admin
